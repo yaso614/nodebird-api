@@ -1,18 +1,18 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const passport = reqruie('passport');
+const passport = require('passport');
 const morgan = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 require('dotenv').config();
 
 const { sequelize } = require('./models');
-const passportConfig = require('/passport');
+const passportConfig = require('./passport');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes');
 
-const app = exrpess();
+const app = express();
 sequelize.sync();
 passportConfig(passport);
 
@@ -31,8 +31,8 @@ app.use(session({
   secret: process.env.COOKIE_SECRET,
   cookie: {
     httpOnly: true,
-    secure: false
-  }
+    secure: false,
+  },
 }));
 app.use(flash());
 app.use(passport.initialize());
@@ -45,9 +45,9 @@ app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
-})
+});
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
@@ -55,5 +55,5 @@ app.use((err, req, res) => {
 });
 
 app.listen(app.get('port'), () => {
-  console.log(app.get('port'), '번 포트에서 대기 중');
-})
+  console.log(app.get('port'), '번 포트에서 대기중');
+});
