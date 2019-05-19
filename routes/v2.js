@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/token', apiLimiter, async (req, res) => {
   const { clientSecret } = req.body;
   try {
-    const domain = await Domain.find({
+    const domain = await Domain.findOne({
       where: { clientSecret },
       include: {
         model: User,
@@ -67,7 +67,7 @@ router.get('/posts/my', apiLimiter, verifyToken, (req, res) => {
 
 router.get('/posts/hashtag/:title', verifyToken, apiLimiter, async (req, res) => {
   try {
-    const hashtag = await Hashtag.find({ where: { title: req.params.title } });
+    const hashtag = await Hashtag.findOne({ where: { title: req.params.title } });
     if (!hashtag) {
       return res.status(404).json({
         code: 404,
